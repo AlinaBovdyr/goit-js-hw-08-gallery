@@ -20,5 +20,12 @@ function createGalleryMarkup(items) {
     .join('');
 }
 
-const galleryRef = document.querySelector('.js-gallery');
-galleryRef.insertAdjacentHTML('afterbegin', createGalleryMarkup(galleryItems));
+const galleryContainer = document.querySelector('.js-gallery');
+galleryContainer.insertAdjacentHTML(
+  'afterbegin',
+  createGalleryMarkup(galleryItems),
+);
+
+galleryContainer.addEventListener('click', onGalleryContainerClick);
+
+function onGalleryContainerClick(event) {}
