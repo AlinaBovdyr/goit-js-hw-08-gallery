@@ -24,6 +24,7 @@ const galleryContainer = document.querySelector('.js-gallery');
 const modal = document.querySelector('.js-lightbox');
 const closeModalBtn = document.querySelector('button[data-action="close-lightbox"]');
 const lightboxImg = document.querySelector('.lightbox__image');
+const backdrop = document.querySelector('.lightbox__overlay')
 
 galleryContainer.insertAdjacentHTML(
   'afterbegin',
@@ -31,6 +32,7 @@ galleryContainer.insertAdjacentHTML(
 );
 
 galleryContainer.addEventListener('click', onGalleryContainerClick);
+backdrop.addEventListener('click', onModalClose);
 
 function onGalleryContainerClick(event) {
   event.preventDefault();
@@ -50,14 +52,11 @@ function onGalleryContainerClick(event) {
 
 function openModal() {
   modal.classList.add("is-open");
+  window.addEventListener('keydown', onKeyPress);
 }
 
 function closeModal() {
-  closeModalBtn.addEventListener('click', () => {
-    modal.classList.remove("is-open");
-    lightboxImg.setAttribute('src', '');
-    lightboxImg.setAttribute('alt', '');
-  })
+  closeModalBtn.addEventListener('click', onModalClose)
 }
 
 function changeLightboxImgAttributes(image) {
@@ -65,4 +64,29 @@ function changeLightboxImgAttributes(image) {
   const altAttribute = image.alt;
   lightboxImg.setAttribute('src', `${urlOriginal}`);
   lightboxImg.setAttribute('alt', `${altAttribute}`);
+}
+
+function onModalClose() {
+  window.removeEventListener('keydown', onKeyPress);
+  modal.classList.remove("is-open");
+  lightboxImg.setAttribute('src', '');
+  lightboxImg.setAttribute('alt', '');
+}
+
+function onKeyPress(event) {
+  console.log(event);
+
+  if (event.key === 'Escape') {
+    onModalClose();
+  } else if (event.key === 'ArrowRight') {
+    const nextImg = event.target.closest('.gallery__item').nextSibling;
+    console.log(nextImg);
+    
+    changeLightboxImgAttributes(nextImg.children[0].children[0]);
+  } else if (event.key === 'ArrowLeft') {
+    const prevImg = event.target.closest('.gallery__item').previousSibling;
+    console.log(prevImg);
+   
+    changeLightboxImgAttributes(prevImg.children[0].children[0]) 
+  }
 }
