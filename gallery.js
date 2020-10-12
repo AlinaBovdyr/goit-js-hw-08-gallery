@@ -24,7 +24,7 @@ const galleryContainer = document.querySelector('.js-gallery');
 const modal = document.querySelector('.js-lightbox');
 const closeModalBtn = document.querySelector('button[data-action="close-lightbox"]');
 const lightboxImg = document.querySelector('.lightbox__image');
-const backdrop = document.querySelector('.lightbox__overlay')
+const backdrop = document.querySelector('.lightbox__overlay');
 
 galleryContainer.insertAdjacentHTML(
   'afterbegin',
@@ -74,19 +74,32 @@ function onModalClose() {
 }
 
 function onKeyPress(event) {
-  console.log(event);
-
   if (event.key === 'Escape') {
     onModalClose();
-  } else if (event.key === 'ArrowRight') {
-    const nextImg = event.target.closest('.gallery__item').nextSibling;
-    console.log(nextImg);
+  }
+
+  const galleryImages = Array.from(galleryContainer.children).map(galleryItem => {
+    return galleryItem.children[0].children[0];
+  });
     
-    changeLightboxImgAttributes(nextImg.children[0].children[0]);
+  const currentImage = galleryImages.find(galleryImage => {
+    if (galleryImage.dataset.source === lightboxImg.getAttribute('src')) {
+      return galleryImage
+    }
+  });
+    
+  const currentIndex = galleryImages.indexOf(currentImage);
+  const lastImageNum = galleryImages.length - 1;
+  
+  if (event.key === 'ArrowRight') {
+    if (currentIndex === lastImageNum) {
+      return lightboxImg.setAttribute('src', galleryImages[0].dataset.source); 
+    }
+    lightboxImg.setAttribute('src', galleryImages[currentIndex + 1].dataset.source);
   } else if (event.key === 'ArrowLeft') {
-    const prevImg = event.target.closest('.gallery__item').previousSibling;
-    console.log(prevImg);
-   
-    changeLightboxImgAttributes(prevImg.children[0].children[0]) 
+    if (currentIndex === 0) {
+     return lightboxImg.setAttribute('src', galleryImages[lastImageNum].dataset.source);
+    }
+    lightboxImg.setAttribute('src', galleryImages[currentIndex - 1].dataset.source);
   }
 }
